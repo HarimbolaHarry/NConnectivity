@@ -8,12 +8,15 @@ public delegate void TCPServerEventHandler(object sender, TCPArgs e);
 
 namespace NConnectivity.Dispatch.TCP.Core
 {
+    /// <summary>
+    /// Mutli-client Async TCP Socket class Wrapper.
+    /// </summary>
     public class TCPServer
     {
         private byte[] rcvBuffer;
         private byte[] sendBuffer;
 
-        public Socket Instance { get; private set; }
+        public Socket Connection { get; private set; }
         public IPEndPoint IpEndPoint { get; private set; }
         public List<Socket> Connections { get; private set; }
         
@@ -31,9 +34,21 @@ namespace NConnectivity.Dispatch.TCP.Core
         public TCPServer(string host, int port)
         {
             IpEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
-            Instance = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Instance.Bind(IpEndPoint);
-            Instance.Listen(int.MaxValue);
+            Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Connection.Bind(IpEndPoint);
+            Connection.Listen(int.MaxValue);
+        }
+
+        /// <summary>
+        /// Binds the main Socket to the LoopBack address and a given port and Begins listening for connections.
+        /// </summary>
+        /// <param name="port">Port of the EndPoint.</param>
+        public TCPServer(int port)
+        {
+            IpEndPoint = new IPEndPoint(IPAddress.Loopback, port);
+            Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Connection.Bind(IpEndPoint);
+            Connection.Listen(int.MaxValue);
         }
 
         /// <summary>
@@ -41,12 +56,12 @@ namespace NConnectivity.Dispatch.TCP.Core
         /// </summary>
         public void BeginAccept()
         {
-            Instance.BeginAccept(new AsyncCallback(AcceptCallback), Instance);
+            Connection.BeginAccept(new AsyncCallback(AcceptCallback), Connection);
         }
 
         private void AcceptCallback(IAsyncResult ar)
         {
-            Socket accepted = Instance.EndAccept(ar);
+            Socket accepted = Connection.EndAccept(ar);
             Connections.Add(accepted);
 
             TCPAcceptArgs args = new TCPAcceptArgs(accepted);
@@ -54,7 +69,7 @@ namespace NConnectivity.Dispatch.TCP.Core
         }
 
         /// <summary>
-        /// Send a data to a specific host.
+        /// Send data to a specific host.
         /// </summary>
         /// <param name="sock">Connection Socket</param>
         /// <param name="buffer">Data to send</param>
@@ -62,14 +77,14 @@ namespace NConnectivity.Dispatch.TCP.Core
         /// <param name="flags">Socket flags</param>
         public void BeginSend(Socket sock, byte[] buffer, int size, SocketFlags flags = SocketFlags.None)
         {
+            sendBuffer = buffer;
             sock.BeginSend(buffer, 0, size, flags, new AsyncCallback(SendCallback), sock);
-            rcvBuffer = buffer;
         }
 
         private void SendCallback(IAsyncResult ar)
         {
-            int sentBytes = Instance.EndSend(ar);
             Socket sock = (Socket)ar.AsyncState as Socket;
+            int sentBytes = sock.EndSend(ar);
 
             TCPSendArgs args = new TCPSendArgs(sock, sendBuffer, sentBytes);
             Send?.Invoke(this, args);
@@ -91,7 +106,7 @@ namespace NConnectivity.Dispatch.TCP.Core
 
         private void BroadcastCallback(IAsyncResult ar)
         {
-            int sentBytes = Instance.EndSend(ar);
+            int sentBytes = Connection.EndSend(ar);
             Socket sock = (Socket)ar.AsyncState as Socket;
 
             TCPBroadcastArgs args = new TCPBroadcastArgs(sock, sendBuffer, sentBytes);
@@ -99,7 +114,7 @@ namespace NConnectivity.Dispatch.TCP.Core
         }
 
         /// <summary>
-        /// Receive data from any connection
+        /// Receive data from any connection.
         /// </summary>
         /// <param name="size">Size of the data</param>
         /// <param name="flags">Socket flags</param>
@@ -107,7 +122,7 @@ namespace NConnectivity.Dispatch.TCP.Core
         public byte[] BeginReceive(int size, SocketFlags flags = SocketFlags.None)
         {
             byte[] buffer = new byte[2048];
-            Instance.BeginReceive(buffer, 0, size, flags, new AsyncCallback(ReceiveCallback), Instance);
+            Connection.BeginReceive(buffer, 0, size, flags, new AsyncCallback(ReceiveCallback), Connection);
             rcvBuffer = buffer;
 
             byte[] properized_buffer = new byte[size];
@@ -122,25 +137,26 @@ namespace NConnectivity.Dispatch.TCP.Core
 
         private void ReceiveCallback(IAsyncResult ar)
         {
-            int receivedBytes = Instance.EndReceive(ar);
             Socket sock = (Socket)ar.AsyncState as Socket;
+            int receivedBytes = sock.EndReceive(ar);
 
             TCPReceiveArgs args = new TCPReceiveArgs(sock, rcvBuffer, receivedBytes);
             Receive?.Invoke(this, args);
         }
 
         /// <summary>
-        /// Disconnect from a certain Socket
+        /// Disconnect from a certain client reuse is false since the Socket object is removed from the list.
         /// </summary>
         /// <param name="sock">Socket to disconnect from</param>
         public void BeginDisconnect(Socket sock)
         {
-            sock.BeginDisconnect(true, new AsyncCallback(DisconnectCallback), sock);
+            sock.BeginDisconnect(false, new AsyncCallback(DisconnectCallback), sock);
+            Connections.Remove(sock);
         }
 
         private void DisconnectCallback(IAsyncResult ar)
         {
-            Instance.EndDisconnect(ar);
+            Connection.EndDisconnect(ar);
             Socket sock = (Socket)ar.AsyncState as Socket;
 
             TCPDisconnectArgs args = new TCPDisconnectArgs(sock);
