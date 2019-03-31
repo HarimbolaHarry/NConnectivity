@@ -13,7 +13,8 @@ namespace NConnectivity.TCP
     public class TCPClient
     {
         private byte[] rcvBuffer;
-        
+        private byte[] sndBuffer;
+
         public int GeneralBufferSize { get; private set; }
         public Socket Connection { get; private set; }
         public IPEndPoint IpEndPoint { get; private set; }
@@ -38,7 +39,7 @@ namespace NConnectivity.TCP
             rcvBuffer = new byte[1024];
 
             byte[] buffer = new byte[bufferSize];
-            Connection.BeginReceive(buffer, 0, bufferSize, SocketFlags.None, (ReceiveCallback), Connection);
+            Connection.BeginReceive(buffer, 0, bufferSize, SocketFlags.None, ReceiveCallback, Connection);
         }
 
         private void ConnectCallback(IAsyncResult ar)
@@ -53,22 +54,30 @@ namespace NConnectivity.TCP
         /// Send data to the server.
         /// </summary>
         /// <param name="buffer">Data to send</param>
-        /// <param name="size">Size of the data</param>
         /// <param name="flags">Socket flags</param>
-        public void BeginSend(byte[] buffer, int size, SocketFlags flags = SocketFlags.None)
+        public void BeginSend(byte[] buffer, SocketFlags flags = SocketFlags.None)
         {
-            Connection.Send(buffer, flags);
-            ReceiveArgs args = new ReceiveArgs(Connection, buffer, size);
-            Receive?.Invoke(this, args);
+            sndBuffer = buffer;
+            Connection.BeginSend(buffer, 0, buffer.Length, flags, new AsyncCallback(SendCallback), Connection);
+        }
+
+        private void SendCallback(IAsyncResult ar)
+        {
+            Connection.EndSend(ar);
+            ReceiveArgs args = new ReceiveArgs(Connection, sndBuffer, sndBuffer.Length);
+            Send?.Invoke(this, args);
         }
 
         private void ReceiveCallback(IAsyncResult ar)
         {
             int receivedBytes = Connection.EndReceive(ar);
-            Connection.BeginReceive(rcvBuffer, 0, GeneralBufferSize, SocketFlags.None, (ReceiveCallback), Connection);
-
-            ReceiveArgs args = new ReceiveArgs(Connection, rcvBuffer, receivedBytes);
-            Receive?.Invoke(this, args);
+            if (receivedBytes > 0)
+            {
+                Connection.BeginReceive(rcvBuffer, 0, GeneralBufferSize, SocketFlags.None, (ReceiveCallback), Connection);
+                
+                ReceiveArgs args = new ReceiveArgs(Connection, rcvBuffer, receivedBytes);
+                Receive?.Invoke(this, args);
+            }
         }
 
         /// <summary>

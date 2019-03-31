@@ -13,7 +13,8 @@ namespace NConnectivity.TCP
     /// </summary>
     public class TCPServer
     {
-        private byte[] rcvBuffer;
+        byte[] rcvBuffer;
+        byte[] sndBuffer;
 
         public int GeneralBufferSize { get; private set; }
         public Socket Connection { get; private set; }
@@ -31,11 +32,12 @@ namespace NConnectivity.TCP
         /// </summary>
         /// <param name="host">IP Address to bind to.</param>
         /// <param name="port">Port of the EndPoint.</param>
-        public TCPServer(string host, int port, int size)
+        public TCPServer(string host, int port, int maxBufferSize = 1024)
         {
-            GeneralBufferSize = size;
-            rcvBuffer = new byte[size];
+            rcvBuffer = new byte[maxBufferSize];
+            sndBuffer = new byte[maxBufferSize];
             Connections = new List<Socket>();
+            GeneralBufferSize = maxBufferSize;
             IpEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
             Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Connection.Bind(IpEndPoint);
@@ -47,11 +49,12 @@ namespace NConnectivity.TCP
         /// Binds the main Socket to the LoopBack address and a given port and Begins listening for connections.
         /// </summary>
         /// <param name="port">Port of the EndPoint.</param>
-        public TCPServer(int port, int size)
+        public TCPServer(int port, int maxBufferSize = 1024)
         {
-            GeneralBufferSize = size;
-            rcvBuffer = new byte[size];
+            sndBuffer = new byte[maxBufferSize];
+            sndBuffer = new byte[maxBufferSize];
             Connections = new List<Socket>();
+            GeneralBufferSize = maxBufferSize;
             IpEndPoint = new IPEndPoint(IPAddress.Loopback, port);
             Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Connection.Bind(IpEndPoint);
@@ -65,19 +68,16 @@ namespace NConnectivity.TCP
             try
             {
                 accepted = Connection.EndAccept(ar);
+                Connections.Add(accepted);
+                Connection.BeginAccept(AcceptCallback, null);
+                AcceptArgs args = new AcceptArgs(accepted);
+                Accept?.Invoke(this, args);
+                accepted.BeginReceive(rcvBuffer, 0, GeneralBufferSize, SocketFlags.None, (ReceiveCallback), accepted);
             }
             catch
             {
                 return;
             }
-
-            Connections.Add(accepted);
-
-            AcceptArgs args = new AcceptArgs(accepted);
-            Accept?.Invoke(this, args);
-
-            Connection.BeginAccept(AcceptCallback, null);
-            accepted.BeginReceive(rcvBuffer, 0, GeneralBufferSize, SocketFlags.None, (ReceiveCallback), accepted);
         }
 
         /// <summary>
@@ -89,9 +89,17 @@ namespace NConnectivity.TCP
         /// <param name="flags">Socket flags</param>
         public void BeginSend(Socket sock, byte[] buffer, SocketFlags flags = SocketFlags.None)
         {
-            sock.Send(buffer);
-            SendArgs args = new SendArgs(sock, buffer, buffer.Length);
-            Send?.Invoke(this, args);            
+            sndBuffer = buffer;
+            sock.BeginSend(buffer, 0, buffer.Length, flags, new AsyncCallback(SendCallback), sock);
+        }
+
+        private void SendCallback(IAsyncResult ar)
+        {
+            Socket sock = (Socket)ar.AsyncState;
+            sock.EndSend(ar);
+
+            SendArgs args = new SendArgs(sock, sndBuffer, sndBuffer.Length);
+            Send?.Invoke(this, args);
         }
 
         /// <summary>
@@ -113,6 +121,7 @@ namespace NConnectivity.TCP
         private void ReceiveCallback(IAsyncResult ar)
         {
             Socket sock = (Socket)ar.AsyncState;
+            
             int receivedBytes = 0;
             try
             {
