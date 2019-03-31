@@ -14,13 +14,13 @@ Enjoy!
 
 2) It's lightweight
 
-3) It's Stable (But you gotta handle the exceptions yourself)
+3) It's stable (But you gotta handle the exceptions yourself)
 
 4) It's well documented
 
-5) It Fully supports TCP & UDP Protocols (In the right way)
+5) It fully supports TCP & UDP Protocols (In the right way)
 
-6) TCP Protocol's Server supports Multiple clients simultaneously
+6) TCP Protocol's Server supports multiple clients simultaneously
 
 7) It's easy as hell to use
 
