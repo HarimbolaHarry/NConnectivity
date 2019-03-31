@@ -40,17 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dispatch\TCP\EventArguments\TCPAcceptArgs.cs" />
-    <Compile Include="Dispatch\TCP\EventArguments\TCPArgs.cs" />
-    <Compile Include="Dispatch\TCP\Core\TCPServer.cs" />
-    <Compile Include="Dispatch\TCP\Core\TCPClient.cs" />
-    <Compile Include="Dispatch\TCP\EventArguments\TCPBroadcastArgs.cs" />
-    <Compile Include="Dispatch\TCP\EventArguments\TCPConnectArgs.cs" />
-    <Compile Include="Dispatch\TCP\EventArguments\TCPDisconnectArgs.cs" />
-    <Compile Include="Dispatch\TCP\EventArguments\TCPReceiveArgs.cs" />
-    <Compile Include="Dispatch\TCP\EventArguments\TCPSendArgs.cs" />
-    <Compile Include="Dispatch\UDP\UDPBroadcaster.cs" />
-    <Compile Include="Dispatch\UDP\UDPReceiver.cs" />
+    <Compile Include="TCP\EventArguments\TCPAcceptArgs.cs" />
+    <Compile Include="TCP\EventArguments\TCPArgs.cs" />
+    <Compile Include="TCP\Core\TCPServer.cs" />
+    <Compile Include="TCP\Core\TCPClient.cs" />
+    <Compile Include="TCP\EventArguments\TCPBroadcastArgs.cs" />
+    <Compile Include="TCP\EventArguments\TCPConnectArgs.cs" />
+    <Compile Include="TCP\EventArguments\TCPDisconnectArgs.cs" />
+    <Compile Include="TCP\EventArguments\TCPReceiveArgs.cs" />
+    <Compile Include="TCP\EventArguments\TCPSendArgs.cs" />
+    <Compile Include="UDP\UDPBroadcaster.cs" />
+    <Compile Include="UDP\UDPReceiver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
