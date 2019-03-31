@@ -14,7 +14,7 @@ namespace TCPTestServer
         {
             Console.Title = "Server";
 
-            server = new TCPServer("127.0.0.1", 42422, 1024);
+            server = new TCPServer("127.0.0.1", 42422);
             server.Accept += Server_Accept;
 
             while (true) { }
@@ -24,6 +24,9 @@ namespace TCPTestServer
         {
             Console.WriteLine("Client Connected!");
             byte[] x = Encoding.ASCII.GetBytes("Testing!\n");
+
+            System.Threading.Thread.Sleep(1000);
+            
             server.BeginSend(e.Connection, x);
             server.BeginSend(e.Connection, x);
             server.BeginSend(e.Connection, x);

@@ -14,10 +14,15 @@ namespace TCPTestClient
         {
             Console.Title = "Client";
 
-            client = new TCPClient("127.0.0.1", 42422);
+            client = new TCPClient("127.0.0.1", 42422, 1024);
             client.Receive += Client_Receive;
-
+            client.Connect += Client_Connect;
             while (true) { }
+        }
+
+        private static void Client_Connect(object sender, NConnectivity.EventArgs.SocketArgs e)
+        {
+            Console.WriteLine("Connected!");
         }
 
         private static void Client_Receive(object sender, NConnectivity.EventArgs.SocketArgs e)
