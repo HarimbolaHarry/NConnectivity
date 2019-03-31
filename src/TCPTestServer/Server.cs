@@ -16,8 +16,15 @@ namespace TCPTestServer
 
             server = new TCPServer("127.0.0.1", 42422);
             server.Accept += Server_Accept;
-
+            server.Receive += Server_Receive;
             while (true) { }
+        }
+
+        private static void Server_Receive(object sender, NConnectivity.EventArgs.SocketArgs e)
+        {
+            NConnectivity.EventArgs.TransferArgs args = (NConnectivity.EventArgs.TransferArgs)e;
+            string x = Encoding.ASCII.GetString(args.Get());
+            Console.Write(x);
         }
 
         private static void Server_Accept(object sender, NConnectivity.EventArgs.SocketArgs e)

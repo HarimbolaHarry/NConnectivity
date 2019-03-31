@@ -23,11 +23,14 @@ namespace TCPTestClient
         private static void Client_Connect(object sender, NConnectivity.EventArgs.SocketArgs e)
         {
             Console.WriteLine("Connected!");
+
+            byte[] x = Encoding.ASCII.GetBytes("Testing from Client!\n");
+            client.BeginSend(x);
         }
 
         private static void Client_Receive(object sender, NConnectivity.EventArgs.SocketArgs e)
         {
-            NConnectivity.EventArgs.ReceiveArgs args = (NConnectivity.EventArgs.ReceiveArgs)e;
+            NConnectivity.EventArgs.TransferArgs args = (NConnectivity.EventArgs.TransferArgs)e;
             string x = Encoding.ASCII.GetString(args.Get());
             Console.Write(x);
         }
