@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using NConnectivity.EventArgs;
 
-namespace NConnectivity.TCP.Core
+namespace NConnectivity.TCP
 {
     /// <summary>
     /// Mutli-client Async TCP Socket class Wrapper.
