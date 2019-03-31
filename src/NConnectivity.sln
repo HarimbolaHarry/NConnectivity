@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NConnectivity", "NConnectivity\NConnectivity.csproj", "{2B16AFEC-7FA7-4963-89C0-661901B8E113}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCPTestServer", "TCPTestServer\TCPTestServer.csproj", "{11B68807-84D3-4C97-9CB2-4B0D0BB36338}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCPTestClient", "TCPTestClient\TCPTestClient.csproj", "{97063D5D-D0DC-49E7-8481-7B07B49D5B9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{2B16AFEC-7FA7-4963-89C0-661901B8E113}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B16AFEC-7FA7-4963-89C0-661901B8E113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B16AFEC-7FA7-4963-89C0-661901B8E113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11B68807-84D3-4C97-9CB2-4B0D0BB36338}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11B68807-84D3-4C97-9CB2-4B0D0BB36338}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11B68807-84D3-4C97-9CB2-4B0D0BB36338}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11B68807-84D3-4C97-9CB2-4B0D0BB36338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97063D5D-D0DC-49E7-8481-7B07B49D5B9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97063D5D-D0DC-49E7-8481-7B07B49D5B9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97063D5D-D0DC-49E7-8481-7B07B49D5B9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97063D5D-D0DC-49E7-8481-7B07B49D5B9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
