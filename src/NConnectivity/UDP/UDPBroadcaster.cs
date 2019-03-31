@@ -36,7 +36,7 @@ namespace NConnectivity.UDP
         {
             endPoint = new IPEndPoint(IPAddress.Parse(address), port);
             sendBuffer = buffer;
-            Instance.BeginSendTo(buffer, 0, size, flags, endPoint, new AsyncCallback(SendToCallback), Instance);
+            Instance.BeginSendTo(buffer, 0, size, flags, endPoint, (SendToCallback), Instance);
         }
 
         private void SendToCallback(IAsyncResult ar)

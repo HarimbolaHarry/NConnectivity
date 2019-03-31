@@ -23,7 +23,7 @@ namespace NConnectivity.UDP
         {
             IpEndpoint = new IPEndPoint(IPAddress.Loopback, port);
 
-            Listener.BeginReceive(new AsyncCallback(ReceiveCallback), Listener);
+            Listener.BeginReceive((ReceiveCallback), Listener);
         }
 
         private void ReceiveCallback(IAsyncResult ar)
