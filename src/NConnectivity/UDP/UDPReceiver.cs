@@ -9,7 +9,6 @@ namespace NConnectivity.UDP
 {
     public class UDPReceiver
     {
-        private byte[] rcvBuffer;
         public UdpClient Listener { get; private set; }
         public IPEndPoint IpEndpoint { get; private set; }
 
@@ -32,7 +31,7 @@ namespace NConnectivity.UDP
             byte[] receivedData = Listener.EndReceive(ar, ref ipe);
             IpEndpoint = ipe;
 
-            ReceiveArgs args = new ReceiveArgs(Listener.Client, receivedData, receivedData.Length);
+            TransferArgs args = new TransferArgs(Listener.Client, receivedData, receivedData.Length);
             Receive?.Invoke(this, args);
         }
     }

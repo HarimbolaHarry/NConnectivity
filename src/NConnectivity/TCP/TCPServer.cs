@@ -70,7 +70,7 @@ namespace NConnectivity.TCP
                 accepted = Connection.EndAccept(ar);
                 Connections.Add(accepted);
                 Connection.BeginAccept(AcceptCallback, null);
-                AcceptArgs args = new AcceptArgs(accepted);
+                SocketArgs args = new SocketArgs(accepted);
                 Accept?.Invoke(this, args);
                 accepted.BeginReceive(rcvBuffer, 0, GeneralBufferSize, SocketFlags.None, (ReceiveCallback), accepted);
             }
@@ -98,7 +98,7 @@ namespace NConnectivity.TCP
             Socket sock = (Socket)ar.AsyncState;
             sock.EndSend(ar);
 
-            SendArgs args = new SendArgs(sock, sndBuffer, sndBuffer.Length);
+            TransferArgs args = new TransferArgs(sock, sndBuffer, sndBuffer.Length);
             Send?.Invoke(this, args);
         }
 
@@ -113,7 +113,7 @@ namespace NConnectivity.TCP
             foreach (Socket socket in Connections)
             {
                 socket.Send(buffer);
-                SendArgs args = new SendArgs(socket, buffer, buffer.Length);
+                TransferArgs args = new TransferArgs(socket, buffer, buffer.Length);
                 Broadcast?.Invoke(this, args);
             }
         }
@@ -134,7 +134,7 @@ namespace NConnectivity.TCP
                 return;
             }
 
-            ReceiveArgs args = new ReceiveArgs(sock, rcvBuffer, receivedBytes);
+            TransferArgs args = new TransferArgs(sock, rcvBuffer, receivedBytes);
             Receive?.Invoke(this, args);
             sock.BeginReceive(rcvBuffer, 0, GeneralBufferSize, SocketFlags.None, (ReceiveCallback), sock);
         }
@@ -146,7 +146,7 @@ namespace NConnectivity.TCP
         public void BeginDisconnect(Socket sock)
         {
             sock.Disconnect(false);
-            DisconnectArgs args = new DisconnectArgs(sock);
+            SocketArgs args = new SocketArgs(sock);
             Connections.Remove(sock);
             Disconnect?.Invoke(this, args);
         }

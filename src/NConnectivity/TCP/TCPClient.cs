@@ -46,7 +46,7 @@ namespace NConnectivity.TCP
         {
             Connection.EndConnect(ar);
 
-            ConnectArgs args = new ConnectArgs(Connection);
+            SocketArgs args = new SocketArgs(Connection);
             Connect?.Invoke(this, args);
         }
 
@@ -64,7 +64,7 @@ namespace NConnectivity.TCP
         private void SendCallback(IAsyncResult ar)
         {
             Connection.EndSend(ar);
-            ReceiveArgs args = new ReceiveArgs(Connection, sndBuffer, sndBuffer.Length);
+            TransferArgs args = new TransferArgs(Connection, sndBuffer, sndBuffer.Length);
             Send?.Invoke(this, args);
         }
 
@@ -75,7 +75,7 @@ namespace NConnectivity.TCP
             {
                 Connection.BeginReceive(rcvBuffer, 0, GeneralBufferSize, SocketFlags.None, (ReceiveCallback), Connection);
                 
-                ReceiveArgs args = new ReceiveArgs(Connection, rcvBuffer, receivedBytes);
+                TransferArgs args = new TransferArgs(Connection, rcvBuffer, receivedBytes);
                 Receive?.Invoke(this, args);
             }
         }
@@ -92,7 +92,7 @@ namespace NConnectivity.TCP
         {
             Connection.EndDisconnect(ar);
 
-            DisconnectArgs args = new DisconnectArgs(Connection);
+            SocketArgs args = new SocketArgs(Connection);
             Disconnect?.Invoke(this, args);
         }
     }

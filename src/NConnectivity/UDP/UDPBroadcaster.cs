@@ -43,7 +43,7 @@ namespace NConnectivity.UDP
         {
             int sentSize = Instance.EndSendTo(ar);
 
-            SendArgs args = new SendArgs(Instance, sendBuffer, sentSize);
+            TransferArgs args = new TransferArgs(Instance, sendBuffer, sentSize);
             Send?.Invoke(this, args);
         }
     }
