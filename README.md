@@ -8,6 +8,28 @@ But I never quite understood sockets and how they work until recently, now this 
 
 Enjoy!
 
+# But Why?
+
+1) It's 100% Thread-Safe
+
+2) It's lightweight
+
+3) It's Stable (But you gotta handle the exceptions yourself)
+
+4) It's well documented
+
+5) It Fully supports TCP & UDP Protocols (In the right way)
+
+6) TCP Protocol's Server supports Multiple clients simultaneously
+
+7) It's easy as hell to use
+
+8) It uses MIT License 
+
+# How to use?
+
+There are two examples projects in the visual studio solution, one glance and you got it, that's how easy it is!
+
 # Copyright
 
 Copyright (C) 2019 Nirex
