@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net.Sockets;
 
-namespace NConnectivity.Dispatch.TCP.EventArguments
+namespace NConnectivity.EventArgs
 {
-    public class TCPArgs : EventArgs
+    public class SocketArgs : EventArgs
     {
-        public TCPArgs(Socket sock)
+        public SocketArgs(Socket sock)
         {
             Connection = sock;
         }
