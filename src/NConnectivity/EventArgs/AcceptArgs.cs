@@ -5,11 +5,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NConnectivity.Dispatch.TCP.EventArguments
+namespace NConnectivity.EventArgs
 {
-    class TCPAcceptArgs : TCPArgs
+    class AcceptArgs : SocketArgs
     {
-        public TCPAcceptArgs(Socket sock) : base(sock)
+        public AcceptArgs(Socket sock) : base(sock)
         {
             
         }
