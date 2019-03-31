@@ -13,8 +13,8 @@ namespace NConnectivity.TCP
     public class TCPClient
     {
         private byte[] rcvBuffer;
-        private byte[] sendBuffer;
-
+        
+        public int GeneralBufferSize { get; private set; }
         public Socket Connection { get; private set; }
         public IPEndPoint IpEndPoint { get; private set; }
 
@@ -28,18 +28,17 @@ namespace NConnectivity.TCP
         /// </summary>
         /// <param name="host">The address of the server</param>
         /// <param name="port">The port of the server</param>
-        public TCPClient(string host, int port)
+        public TCPClient(string host, int port, int bufferSize = 1024)
         {
+            GeneralBufferSize = bufferSize;
             IpEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
             Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        }
+            Connection.BeginConnect(IpEndPoint, (ConnectCallback), Connection);
 
-        /// <summary>
-        /// Begins the connection.
-        /// </summary>
-        public void BeginConnect()
-        {
-            Connection.BeginConnect(IpEndPoint, new AsyncCallback(ConnectCallback), Connection);
+            rcvBuffer = new byte[1024];
+
+            byte[] buffer = new byte[bufferSize];
+            Connection.BeginReceive(buffer, 0, bufferSize, SocketFlags.None, (ReceiveCallback), Connection);
         }
 
         private void ConnectCallback(IAsyncResult ar)
@@ -58,43 +57,15 @@ namespace NConnectivity.TCP
         /// <param name="flags">Socket flags</param>
         public void BeginSend(byte[] buffer, int size, SocketFlags flags = SocketFlags.None)
         {
-            rcvBuffer = buffer;
-            Connection.BeginSend(buffer, 0, size, flags, new AsyncCallback(SendCallback), Connection);
-        }
-
-        private void SendCallback(IAsyncResult ar)
-        {
-            int sentBytes = Connection.EndSend(ar);
-
-            SendArgs args = new SendArgs(Connection, sendBuffer, sentBytes);
-            Send?.Invoke(this, args);
-        }
-
-        /// <summary>
-        /// Receive data from the host.
-        /// </summary>
-        /// <param name="size">Size of the data</param>
-        /// <param name="flags">Socket flags</param>
-        /// <returns></returns>
-        public byte[] BeginReceive(int size, SocketFlags flags = SocketFlags.None)
-        {
-            byte[] buffer = new byte[2048];
-            Connection.BeginReceive(buffer, 0, size, flags, new AsyncCallback(ReceiveCallback), Connection);
-            rcvBuffer = buffer;
-
-            byte[] properized_buffer = new byte[size];
-
-            for (int i = 0; i < size; i++)
-            {
-                properized_buffer[i] = buffer[i];
-            }
-
-            return properized_buffer;
+            Connection.Send(buffer, flags);
+            ReceiveArgs args = new ReceiveArgs(Connection, buffer, size);
+            Receive?.Invoke(this, args);
         }
 
         private void ReceiveCallback(IAsyncResult ar)
         {
             int receivedBytes = Connection.EndReceive(ar);
+            Connection.BeginReceive(rcvBuffer, 0, GeneralBufferSize, SocketFlags.None, (ReceiveCallback), Connection);
 
             ReceiveArgs args = new ReceiveArgs(Connection, rcvBuffer, receivedBytes);
             Receive?.Invoke(this, args);
@@ -105,7 +76,7 @@ namespace NConnectivity.TCP
         /// </summary>
         public void BeginDisconnect()
         {
-            Connection.BeginDisconnect(false, new AsyncCallback(DisconnectCallback), Connection);
+            Connection.BeginDisconnect(false, (DisconnectCallback), Connection);
         }
 
         private void DisconnectCallback(IAsyncResult ar)
