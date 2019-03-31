@@ -1,10 +1,10 @@
 ﻿using System.Net.Sockets;
 
-namespace NConnectivity.Dispatch.TCP.EventArguments
+namespace NConnectivity.EventArgs
 {
-    public class TCPReceiveArgs : TCPArgs
+    public class ReceiveArgs : SocketArgs
     {
-        public TCPReceiveArgs(Socket sock, byte[] data, int size) : base(sock)
+        public ReceiveArgs(Socket sock, byte[] data, int size) : base(sock)
         {
             Data = data;
             ReceivedSize = size;
