@@ -40,16 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventArgs\AcceptArgs.cs" />
     <Compile Include="EventArgs\SocketArgs.cs" />
     <Compile Include="Utility\ConnectionEventHandler.cs" />
     <Compile Include="TCP\TCPServer.cs" />
     <Compile Include="TCP\TCPClient.cs" />
-    <Compile Include="EventArgs\BroadcastArgs.cs" />
-    <Compile Include="EventArgs\ConnectArgs.cs" />
-    <Compile Include="EventArgs\DisconnectArgs.cs" />
-    <Compile Include="EventArgs\ReceiveArgs.cs" />
-    <Compile Include="EventArgs\SendArgs.cs" />
+    <Compile Include="EventArgs\TransferArgs.cs" />
     <Compile Include="UDP\UDPBroadcaster.cs" />
     <Compile Include="UDP\UDPReceiver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
