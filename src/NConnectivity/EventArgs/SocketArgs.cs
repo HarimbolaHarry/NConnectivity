@@ -1,9 +1,8 @@
-﻿using System;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 
 namespace NConnectivity.EventArgs
 {
-    public class SocketArgs : EventArgs
+    public class SocketArgs : System.EventArgs
     {
         public SocketArgs(Socket sock)
         {
