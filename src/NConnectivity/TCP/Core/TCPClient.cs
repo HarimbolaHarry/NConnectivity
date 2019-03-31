@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using NConnectivity.Dispatch.TCP.EventArguments;
+using NConnectivity.EventArgs;
 
-public delegate void TCPClientEventHandler(object sender, TCPArgs e);
-
-namespace NConnectivity.Dispatch.TCP.Core
+namespace NConnectivity.TCP.Core
 {
     /// <summary>
     /// Async TCP Client Socket class Wrapper.
@@ -18,10 +16,10 @@ namespace NConnectivity.Dispatch.TCP.Core
         public Socket Connection { get; private set; }
         public IPEndPoint IpEndPoint { get; private set; }
 
-        public event TCPClientEventHandler Connect;
-        public event TCPClientEventHandler Send;
-        public event TCPClientEventHandler Receive;
-        public event TCPClientEventHandler Disconnect;
+        public event ConnectionEventHandler Connect;
+        public event ConnectionEventHandler Send;
+        public event ConnectionEventHandler Receive;
+        public event ConnectionEventHandler Disconnect;
 
         /// <summary>
         /// Initiates the required data for making a connection.
@@ -46,7 +44,7 @@ namespace NConnectivity.Dispatch.TCP.Core
         {
             Connection.EndConnect(ar);
 
-            TCPConnectArgs args = new TCPConnectArgs(Connection);
+            ConnectArgs args = new ConnectArgs(Connection);
             Connect?.Invoke(this, args);
         }
 
@@ -66,7 +64,7 @@ namespace NConnectivity.Dispatch.TCP.Core
         {
             int sentBytes = Connection.EndSend(ar);
 
-            TCPSendArgs args = new TCPSendArgs(Connection, sendBuffer, sentBytes);
+            SendArgs args = new SendArgs(Connection, sendBuffer, sentBytes);
             Send?.Invoke(this, args);
         }
 
@@ -96,7 +94,7 @@ namespace NConnectivity.Dispatch.TCP.Core
         {
             int receivedBytes = Connection.EndReceive(ar);
 
-            TCPReceiveArgs args = new TCPReceiveArgs(Connection, rcvBuffer, receivedBytes);
+            ReceiveArgs args = new ReceiveArgs(Connection, rcvBuffer, receivedBytes);
             Receive?.Invoke(this, args);
         }
 
@@ -112,7 +110,7 @@ namespace NConnectivity.Dispatch.TCP.Core
         {
             Connection.EndDisconnect(ar);
 
-            TCPDisconnectArgs args = new TCPDisconnectArgs(Connection);
+            DisconnectArgs args = new DisconnectArgs(Connection);
             Disconnect?.Invoke(this, args);
         }
     }
