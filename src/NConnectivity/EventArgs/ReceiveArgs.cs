@@ -15,5 +15,15 @@ namespace NConnectivity.EventArgs
         public byte[] Data { get; protected set; }
 
         public int ReceivedSize { get; protected set; }
+
+        public byte[] Get()
+        {
+            byte[] bytes = new byte[ReceivedSize];
+            for (int i = 0; i < ReceivedSize; i++)
+            {
+                bytes[i] = Data[i];
+            }
+            return bytes;
+        }
     }
 }
