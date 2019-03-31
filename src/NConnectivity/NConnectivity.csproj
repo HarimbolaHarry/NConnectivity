@@ -43,8 +43,8 @@
     <Compile Include="EventArgs\AcceptArgs.cs" />
     <Compile Include="EventArgs\SocketArgs.cs" />
     <Compile Include="Utility\ConnectionEventHandler.cs" />
-    <Compile Include="TCP\Core\TCPServer.cs" />
-    <Compile Include="TCP\Core\TCPClient.cs" />
+    <Compile Include="TCP\TCPServer.cs" />
+    <Compile Include="TCP\TCPClient.cs" />
     <Compile Include="EventArgs\BroadcastArgs.cs" />
     <Compile Include="EventArgs\ConnectArgs.cs" />
     <Compile Include="EventArgs\DisconnectArgs.cs" />
