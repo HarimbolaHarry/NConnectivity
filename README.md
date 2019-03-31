@@ -26,10 +26,6 @@ Enjoy!
 
 8) It uses MIT License 
 
-# How to use?
-
-There are two examples projects in the visual studio solution, one glance and you got it, that's how easy it is!
-
 # Copyright
 
 Copyright (C) 2019 Nirex
