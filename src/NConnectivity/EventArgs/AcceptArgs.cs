@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// © 2019 NIREX ALL RIGHTS RESERVED
+
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NConnectivity.EventArgs
 {

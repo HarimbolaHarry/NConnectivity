@@ -1,4 +1,6 @@
-﻿using System;
+﻿// © 2019 NIREX ALL RIGHTS RESERVED
+
+using System;
 using System.Net;
 using System.Net.Sockets;
 using NConnectivity.EventArgs;

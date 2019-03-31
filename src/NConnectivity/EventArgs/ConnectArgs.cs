@@ -1,4 +1,6 @@
-﻿using System.Net.Sockets;
+﻿// © 2019 NIREX ALL RIGHTS RESERVED
+
+using System.Net.Sockets;
 
 namespace NConnectivity.EventArgs
 {
