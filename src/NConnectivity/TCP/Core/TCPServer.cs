@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using NConnectivity.Dispatch.TCP.EventArguments;
+using NConnectivity.EventArgs;
 
-public delegate void TCPServerEventHandler(object sender, TCPArgs e);
-
-namespace NConnectivity.Dispatch.TCP.Core
+namespace NConnectivity.TCP.Core
 {
     /// <summary>
     /// Mutli-client Async TCP Socket class Wrapper.
@@ -20,11 +18,11 @@ namespace NConnectivity.Dispatch.TCP.Core
         public IPEndPoint IpEndPoint { get; private set; }
         public List<Socket> Connections { get; private set; }
         
-        public event TCPServerEventHandler Accept;
-        public event TCPServerEventHandler Send;
-        public event TCPServerEventHandler Receive;
-        public event TCPServerEventHandler Broadcast;
-        public event TCPServerEventHandler Disconnect;
+        public event ConnectionEventHandler Accept;
+        public event ConnectionEventHandler Send;
+        public event ConnectionEventHandler Receive;
+        public event ConnectionEventHandler Broadcast;
+        public event ConnectionEventHandler Disconnect;
 
         /// <summary>
         /// Binds the main Socket to the given EndPoint and Begins listening for connections.
@@ -64,7 +62,7 @@ namespace NConnectivity.Dispatch.TCP.Core
             Socket accepted = Connection.EndAccept(ar);
             Connections.Add(accepted);
 
-            TCPAcceptArgs args = new TCPAcceptArgs(accepted);
+            AcceptArgs args = new AcceptArgs(accepted);
             Accept?.Invoke(this, args);
         }
 
@@ -86,7 +84,7 @@ namespace NConnectivity.Dispatch.TCP.Core
             Socket sock = (Socket)ar.AsyncState as Socket;
             int sentBytes = sock.EndSend(ar);
 
-            TCPSendArgs args = new TCPSendArgs(sock, sendBuffer, sentBytes);
+            SendArgs args = new SendArgs(sock, sendBuffer, sentBytes);
             Send?.Invoke(this, args);
         }
 
@@ -109,7 +107,7 @@ namespace NConnectivity.Dispatch.TCP.Core
             int sentBytes = Connection.EndSend(ar);
             Socket sock = (Socket)ar.AsyncState as Socket;
 
-            TCPBroadcastArgs args = new TCPBroadcastArgs(sock, sendBuffer, sentBytes);
+            BroadcastArgs args = new BroadcastArgs(sock, sendBuffer, sentBytes);
             Send?.Invoke(this, args);
         }
 
@@ -140,7 +138,7 @@ namespace NConnectivity.Dispatch.TCP.Core
             Socket sock = (Socket)ar.AsyncState as Socket;
             int receivedBytes = sock.EndReceive(ar);
 
-            TCPReceiveArgs args = new TCPReceiveArgs(sock, rcvBuffer, receivedBytes);
+            ReceiveArgs args = new ReceiveArgs(sock, rcvBuffer, receivedBytes);
             Receive?.Invoke(this, args);
         }
 
@@ -159,7 +157,7 @@ namespace NConnectivity.Dispatch.TCP.Core
             Connection.EndDisconnect(ar);
             Socket sock = (Socket)ar.AsyncState as Socket;
 
-            TCPDisconnectArgs args = new TCPDisconnectArgs(sock);
+            DisconnectArgs args = new DisconnectArgs(sock);
             Disconnect?.Invoke(this, args);
         }
     }
