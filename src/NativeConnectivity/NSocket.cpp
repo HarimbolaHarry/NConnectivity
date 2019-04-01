@@ -35,9 +35,9 @@ namespace NConnectivity
 	{
 		addr = inEndPoint.ip;
 		port = inEndPoint.port;
-		socket_type = inOptions.socket_type;
-		protocol = inOptions.socket_protocol;
-		flags = inOptions.socket_flags;
+		socket_type = (int)inOptions.type;
+		protocol = (int)inOptions.protocol;
+		flags = (int)inOptions.flags;
 
 
 		endPoint.sin_addr.s_addr = inet_addr(inEndPoint.ip.c_str());
