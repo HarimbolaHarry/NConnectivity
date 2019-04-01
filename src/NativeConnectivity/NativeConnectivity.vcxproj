@@ -147,14 +147,14 @@
     <ClInclude Include="NDefines.h" />
     <ClInclude Include="NSocketRegistry.h" />
     <ClInclude Include="NWindows.h" />
-    <ClInclude Include="Socket.h" />
+    <ClInclude Include="NSocket.h" />
     <ClInclude Include="SocketArgs.h" />
     <ClInclude Include="TransferArgs.h" />
     <ClInclude Include="WinSock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NSocketRegistry.cpp" />
-    <ClCompile Include="Socket.cpp" />
+    <ClCompile Include="NSocket.cpp" />
     <ClCompile Include="SocketArgs.cpp" />
     <ClCompile Include="TransferArgs.cpp" />
   </ItemGroup>

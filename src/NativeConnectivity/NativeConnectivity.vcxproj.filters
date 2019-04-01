@@ -45,9 +45,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Socket.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="WinSock.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -66,11 +63,11 @@
     <ClInclude Include="NSocketRegistry.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="NSocket.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Socket.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="SocketArgs.cpp">
       <Filter>Source Files\EventArgs</Filter>
     </ClCompile>
@@ -78,6 +75,9 @@
       <Filter>Source Files\EventArgs</Filter>
     </ClCompile>
     <ClCompile Include="NSocketRegistry.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="NSocket.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
