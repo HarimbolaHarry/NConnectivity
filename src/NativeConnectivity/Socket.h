@@ -14,11 +14,11 @@
 
 namespace NConnectivity
 {
-	class NAPI Socket final
+	class NAPI NSocket final
 	{
 	public:
-		Socket(const std::string& addr, int port, int socket_type, int protocol, int flags = 0);
-		~Socket(void);
+		NSocket(const std::string& addr, int port, int socket_type, int protocol, int flags = 0);
+		~NSocket(void);
 
 		// Bind socket to the EndPoint
 		int Bind(void);
@@ -56,7 +56,7 @@ namespace NConnectivity
 		// Disconnect the main socket (ASYNC)
 		void BeginDisconnect(void);
 
-		SOCKET* GetSocket(void);
+		SOCKET* GetNSocket(void);
 
 		SocketRegistry* GetAcceptRegistry(void);
 
@@ -69,13 +69,13 @@ namespace NConnectivity
 		SocketRegistry* GetDisconnectRegistry(void);
 
 	private:
-		void SetSocket(const SOCKET& sock);
+		void SetNSocket(const SOCKET& sock);
 
-		void AcceptMethod(void);
-		void ConnectMethod(void);
-		void SendMethod(char* data, int dataLength);
-		void ReceiveMethod(char* buffer, int length);
-		void DisconnectMethod(void);
+		void HelperAcceptMethod(void);
+		void HelperConnectMethod(void);
+		void HelperSendMethod(char* data, int dataLength);
+		void HelperReceiveMethod(char* buffer, int length);
+		void HelperDisconnectMethod(void);
 
 		SocketRegistry* AcceptRegistry;
 		SocketRegistry* ConnectRegistry;

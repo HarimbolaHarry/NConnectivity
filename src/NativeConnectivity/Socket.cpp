@@ -4,7 +4,7 @@
 
 namespace NConnectivity
 {
-	Socket::Socket(const std::string& addr, int port, int socket_type, int protocol, int flags)
+	NSocket::NSocket(const std::string& addr, int port, int socket_type, int protocol, int flags)
 		: addr(addr)
 		, port(port)
 		, socket_type(socket_type)
@@ -15,7 +15,7 @@ namespace NConnectivity
 
 		endPoint.sin_addr.s_addr = inet_addr(addr.c_str());
 		endPoint.sin_port = htons(port);
-		// For UDP & TCP Sockets
+		// For UDP & TCP NSockets
 		endPoint.sin_family = AF_INET;
 
 		addrLen = sizeof(endPoint);
@@ -28,7 +28,7 @@ namespace NConnectivity
 		DisconnectRegistry = new SocketRegistry();
 	}
 
-	Socket::~Socket(void)
+	NSocket::~NSocket(void)
 	{
 		delete AcceptRegistry;
 		delete ConnectRegistry;
@@ -39,102 +39,103 @@ namespace NConnectivity
 		delete sck;
 	}
 
-	int Socket::Bind(void)
+	int NSocket::Bind(void)
 	{
 		return bind(*sck, (SOCKADDR*)&endPoint, addrLen);
 	}
 
-	int Socket::Listen(int backlog)
+	int NSocket::Listen(int backlog)
 	{
 		return listen(*sck, backlog);
 	}
 
-	SOCKET Socket::Accept(void)
+	SOCKET NSocket::Accept(void)
 	{
 		return accept(*sck, (SOCKADDR*)&endPoint, &addrLen);
 	}
 
-	void Socket::BeginAccept(void)
+	void NSocket::BeginAccept(void)
 	{
-		std::thread t(&Socket::AcceptMethod, this);
+		std::thread t(&NSocket::HelperAcceptMethod, this);
 		t.detach();
 	}
 
-	int Socket::Connect(void)
+	int NSocket::Connect(void)
 	{
 		return connect(*sck, (SOCKADDR*)&endPoint, addrLen);
 	}
 
-	void Socket::BeginConnect(void)
+	void NSocket::BeginConnect(void)
 	{
-		std::thread t(&Socket::ConnectMethod, this);
+		std::thread t(&NSocket::HelperConnectMethod, this);
+		
 		t.detach();
 	}
 
-	int Socket::Send(char* data, int dataLength)
+	int NSocket::Send(char* data, int dataLength)
 	{
 		return send(*sck, data, dataLength, flags);
 	}
 
-	void Socket::BeginSend(char* data, int dataLength)
+	void NSocket::BeginSend(char* data, int dataLength)
 	{
-		std::thread t(&Socket::SendMethod, this, data, dataLength);
+		std::thread t(&NSocket::HelperSendMethod, this, data, dataLength);
 		t.detach();
 	}
 
-	int Socket::Receive(char* buffer, int length)
+	int NSocket::Receive(char* buffer, int length)
 	{
 		return recv(*sck, buffer, length, flags);
 	}
 
-	void Socket::BeginReceive(char* buffer, int length)
+	void NSocket::BeginReceive(char* buffer, int length)
 	{
-		std::thread t(&Socket::ReceiveMethod, this, buffer, length);
+		std::thread t(&NSocket::HelperReceiveMethod, this, buffer, length);
 		t.detach();
 	}
 
-	int Socket::Disconnect(void)
+	int NSocket::Disconnect(void)
 	{
 		return closesocket(*sck);
 	}
 
-	void Socket::BeginDisconnect(void)
+	void NSocket::BeginDisconnect(void)
 	{
-		std::thread t(&Socket::DisconnectMethod, this);
+		std::thread t(&NSocket::HelperDisconnectMethod, this);
 		t.detach();
 	}
 
-	SOCKET* Socket::GetSocket(void)
+	SOCKET* NSocket::GetNSocket(void)
 	{
 		return sck;
 	}
 
-	SocketRegistry* Socket::GetAcceptRegistry(void)
+	SocketRegistry* NSocket::GetAcceptRegistry(void)
 	{
 		return AcceptRegistry;
 	}
 
-	SocketRegistry* Socket::GetConnectRegistry(void)
+	SocketRegistry* NSocket::GetConnectRegistry(void)
 	{
 		return ConnectRegistry;
 	}
 
-	SocketRegistry* Socket::GetSendRegistry(void)
+	SocketRegistry* NSocket::GetSendRegistry(void)
 	{
 		return SendRegistry;
 	}
 
-	SocketRegistry* Socket::GetReceiveRegistry(void)
+	SocketRegistry* NSocket::GetReceiveRegistry(void)
 	{
 		return ReceiveRegistry;
 	}
 
-	SocketRegistry* Socket::GetDisconnectRegistry(void)
+	SocketRegistry* NSocket::GetDisconnectRegistry(void)
 	{
 		return DisconnectRegistry;
 	}
 
-	void Socket::SetSocket(const SOCKET& sock)
+	void NSocket::SetNSocket(const SOCKET& sock)
 	{
 		if (sck)
 		{
@@ -143,47 +144,45 @@ namespace NConnectivity
 		sck = new SOCKET(sock);
 	}
 
-	void Socket::AcceptMethod(void)
+	void NSocket::HelperAcceptMethod(void)
 	{
 		SOCKET accepted = accept(*sck, (SOCKADDR*)&endPoint, &addrLen);
 			
 		if (accepted)
 		{
-			int result = 0;
-		
-			Socket accepted_socket(*this);
-			accepted_socket.SetSocket(accepted);
+			NSocket accepted_socket(*this);
+			accepted_socket.SetNSocket(accepted);
 
-			std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(accepted_socket, result));
+			std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(&accepted_socket, (int)accepted));
 			AcceptRegistry->Run(this, args.get());
 		}
 	}
 
-	void Socket::ConnectMethod(void)
+	void NSocket::HelperConnectMethod(void)
 	{
 		int result = connect(*sck, (SOCKADDR*)&endPoint, addrLen);
-		std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(*this, result));
+		std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(this, result));
 		ConnectRegistry->Run(this, args.get());
 	}
 
-	void Socket::SendMethod(char* data, int dataLength)
+	void NSocket::HelperSendMethod(char* data, int dataLength)
 	{
 		int result = send(*sck, data, dataLength, flags);
-		std::unique_ptr<TransferArgs> args = std::make_unique<TransferArgs>(TransferArgs(*this, data, dataLength, result));
+		std::unique_ptr<TransferArgs> args = std::make_unique<TransferArgs>(TransferArgs(this, data, dataLength, result));
 		SendRegistry->Run(this, args.get());
 	}
 
-	void Socket::ReceiveMethod(char* buffer, int length)
+	void NSocket::HelperReceiveMethod(char* buffer, int length)
 	{
 		int result = recv(*sck, buffer, length, flags);
-		std::unique_ptr<TransferArgs> args = std::make_unique<TransferArgs>(TransferArgs(*this, buffer, length, result));;
+		std::unique_ptr<TransferArgs> args = std::make_unique<TransferArgs>(TransferArgs(this, buffer, length, result));;
 		ReceiveRegistry->Run(this, args.get());
 	}
 
-	void Socket::DisconnectMethod(void)
+	void NSocket::HelperDisconnectMethod(void)
 	{
 		int result = closesocket(*sck);
-		std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(*this, result));
+		std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(this, result));
 		DisconnectRegistry->Run(this, args.get());
 	}
 }
