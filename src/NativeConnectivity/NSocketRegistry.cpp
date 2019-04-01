@@ -36,7 +36,7 @@ namespace NConnectivity
 		return m_count;
 	}
 
-	SocketRegistry* SocketRegistry::operator()(Socket* sender, SocketArgs* args)
+	SocketRegistry* SocketRegistry::operator()(NSocket* sender, SocketArgs* args)
 	{
 		SocketAnnex current;
 		for (size_t i = 0; i < m_registered.size(); i++)
@@ -50,7 +50,7 @@ namespace NConnectivity
 		return this;
 	}
 
-	SocketRegistry* SocketRegistry::Run(Socket* sender, SocketArgs* args)
+	SocketRegistry* SocketRegistry::Run(NSocket* sender, SocketArgs* args)
 	{
 		SocketAnnex current;
 		for (size_t i = 0; i < m_registered.size(); i++)

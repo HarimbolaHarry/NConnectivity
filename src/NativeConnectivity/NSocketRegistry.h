@@ -10,9 +10,9 @@
 
 namespace NConnectivity
 {
-	class Socket;
+	class NSocket;
 
-	typedef std::function<void(Socket* sender, SocketArgs* args)> SocketAnnex;
+	typedef std::function<void(NSocket* sender, SocketArgs* args)> SocketAnnex;
 
 	class NAPI SocketRegistry final
 	{
@@ -24,9 +24,9 @@ namespace NConnectivity
 
 		long GetCount(void) const;
 
-		SocketRegistry* operator()(Socket* sender, SocketArgs* args);
+		SocketRegistry* operator()(NSocket* sender, SocketArgs* args);
 
-		SocketRegistry* Run(Socket* sender, SocketArgs* args);
+		SocketRegistry* Run(NSocket* sender, SocketArgs* args);
 
 		SocketRegistry* Register(SocketAnnex rhs);
 
