@@ -13,4 +13,7 @@
 #include <WinSock2.h>
 #undef _INC_WINDOWS
 
+
+int InitiateWinSock(WSADATA* outData);
+
 #endif // !_N_WINSOCK_H_
