@@ -6,6 +6,7 @@
 #include "ESocketType.h"
 #include "ESocketProtocol.h"
 #include "ESocketFlags.h"
+#include "ESocketFamily.h"
 
 namespace NConnectivity
 {
@@ -14,6 +15,7 @@ namespace NConnectivity
 		ESocketType type;
 		ESocketProtocol protocol;
 		ESocketFlags flags;
+		ESocketAddressFamily addressFamily;
 
 	} SocketOptions;
 }
