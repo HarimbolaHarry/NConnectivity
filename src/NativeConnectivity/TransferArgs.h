@@ -10,7 +10,7 @@ namespace NConnectivity
 	class NAPI TransferArgs : public SocketArgs
 	{
 	public:
-		TransferArgs(Socket sock, char* data, int dataLength, int result);
+		TransferArgs(NSocket* sock, char* data, int dataLength, int result);
 
 		char* GetData(void);
 

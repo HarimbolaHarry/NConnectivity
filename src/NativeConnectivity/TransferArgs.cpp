@@ -1,10 +1,11 @@
 // © 2019 NIREX ALL RIGHTS RESERVED
 
 #include "TransferArgs.h"
+#include "Socket.h"
 
 namespace NConnectivity
 {
-	TransferArgs::TransferArgs(Socket sock, char* data, int dataLength, int result)
+	TransferArgs::TransferArgs(NSocket* sock, char* data, int dataLength, int result)
 		: SocketArgs(sock, result)
 		, data(data)
 		, dataLength(dataLength)
