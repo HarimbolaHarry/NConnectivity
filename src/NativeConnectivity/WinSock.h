@@ -11,5 +11,4 @@
 #include <WinSock2.h>
 #undef _INC_WINDOWS
 
-
 #endif // !_N_WINSOCK_H_
