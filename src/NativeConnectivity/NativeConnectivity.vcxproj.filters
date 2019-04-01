@@ -66,6 +66,15 @@
     <ClInclude Include="NSocket.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="TCPServer.h">
+      <Filter>Header Files\TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="TCPClient.h">
+      <Filter>Header Files\TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="ISendable.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SocketArgs.cpp">
@@ -82,6 +91,12 @@
     </ClCompile>
     <ClCompile Include="WinSock.c">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="TCPServer.cpp">
+      <Filter>Source Files\TCP</Filter>
+    </ClCompile>
+    <ClCompile Include="TCPClient.cpp">
+      <Filter>Source Files\TCP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

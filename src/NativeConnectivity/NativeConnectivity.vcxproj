@@ -144,11 +144,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ISendable.h" />
     <ClInclude Include="NDefines.h" />
     <ClInclude Include="NSocketRegistry.h" />
     <ClInclude Include="NWindows.h" />
     <ClInclude Include="NSocket.h" />
     <ClInclude Include="SocketArgs.h" />
+    <ClInclude Include="TCPClient.h" />
+    <ClInclude Include="TCPServer.h" />
     <ClInclude Include="TransferArgs.h" />
     <ClInclude Include="WinSock.h" />
   </ItemGroup>
@@ -156,6 +159,8 @@
     <ClCompile Include="NSocketRegistry.cpp" />
     <ClCompile Include="NSocket.cpp" />
     <ClCompile Include="SocketArgs.cpp" />
+    <ClCompile Include="TCPClient.cpp" />
+    <ClCompile Include="TCPServer.cpp" />
     <ClCompile Include="TransferArgs.cpp" />
     <ClCompile Include="WinSock.c" />
   </ItemGroup>
