@@ -22,9 +22,33 @@ Enjoy!
 
 6) TCP Protocol's Server supports multiple clients simultaneously
 
-7) It's easy as hell to use
+7) It's very easy to use
 
 8) It uses MIT License 
+
+# List of Projects
+
+### 1) NConnectivity
+
+Main C# Socket wrapper library that will be developed and expanded.
+
+### 2) LiteConnectivity
+
+Much like NConnectivity but with the lowest amount of features.
+
+### 3) TCPTestClient
+
+Test client made with C# and uses NConnectivity Lib.
+
+### 4) TCPTestServer
+
+Test server made with C# and uses NConnectivity Lib.
+
+### 5) NativeConnectivity
+
+C++ SOCKET wrapper library.
+
+This lib will also be developed alongside NConnectivity.
 
 # Copyright
 
