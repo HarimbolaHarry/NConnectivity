@@ -36,9 +36,9 @@ namespace NConnectivity
 		return m_count;
 	}
 
-	SocketRegistry* SocketRegistry::operator()(NSocket* sender, SocketArgs* args)
+	SocketRegistry* SocketRegistry::operator()(ISendable* sender, SocketArgs* args)
 	{
-		SocketAnnex current;
+		SendableAnnex current;
 		for (size_t i = 0; i < m_registered.size(); i++)
 		{
 			if (m_registered[i] != nullptr)
@@ -50,9 +50,9 @@ namespace NConnectivity
 		return this;
 	}
 
-	SocketRegistry* SocketRegistry::Run(NSocket* sender, SocketArgs* args)
+	SocketRegistry* SocketRegistry::Run(ISendable* sender, SocketArgs* args)
 	{
-		SocketAnnex current;
+		SendableAnnex current;
 		for (size_t i = 0; i < m_registered.size(); i++)
 		{
 			if (m_registered[i] != nullptr)
@@ -64,14 +64,14 @@ namespace NConnectivity
 		return this;
 	}
 
-	SocketRegistry* SocketRegistry::Register(SocketAnnex rhs)
+	SocketRegistry* SocketRegistry::Register(SendableAnnex rhs)
 	{
-		m_registered.push_back(new SocketAnnex(rhs));
+		m_registered.push_back(new SendableAnnex(rhs));
 		_InterlockedIncrement(&m_count);
 		return this;
 	}
 
-	SocketRegistry* SocketRegistry::UnRegister(SocketAnnex rhs)
+	SocketRegistry* SocketRegistry::UnRegister(SendableAnnex rhs)
 	{
 		for (size_t i = 0; i < m_registered.size(); i++)
 		{
@@ -84,14 +84,14 @@ namespace NConnectivity
 		return this;
 	}
 
-	SocketRegistry* SocketRegistry::operator+=(SocketAnnex rhs)
+	SocketRegistry* SocketRegistry::operator+=(SendableAnnex rhs)
 	{
-		m_registered.push_back(new SocketAnnex(rhs));
+		m_registered.push_back(new SendableAnnex(rhs));
 		_InterlockedIncrement(&m_count);
 		return this;
 	}
 
-	SocketRegistry* SocketRegistry::operator-=(SocketAnnex rhs)
+	SocketRegistry* SocketRegistry::operator-=(SendableAnnex rhs)
 	{
 		for (size_t i = 0; i < m_registered.size(); i++)
 		{
@@ -104,7 +104,7 @@ namespace NConnectivity
 		return this;
 	}
 
-	std::vector<SocketAnnex*> SocketRegistry::Container(void) const
+	std::vector<SendableAnnex*> SocketRegistry::Container(void) const
 	{
 		return m_registered;
 	}

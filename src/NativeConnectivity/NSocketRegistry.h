@@ -5,14 +5,14 @@
 
 #include <vector>
 #include <functional>
+
 #include "NDefines.h"
 #include "SocketArgs.h"
+#include "ISendable.h"
 
 namespace NConnectivity
 {
-	class NSocket;
-
-	typedef std::function<void(NSocket* sender, SocketArgs* args)> SocketAnnex;
+	typedef std::function<void(ISendable* sender, SocketArgs* args)> SendableAnnex;
 
 	class NAPI SocketRegistry final
 	{
@@ -24,23 +24,23 @@ namespace NConnectivity
 
 		long GetCount(void) const;
 
-		SocketRegistry* operator()(NSocket* sender, SocketArgs* args);
+		SocketRegistry* operator()(ISendable* sender, SocketArgs* args);
 
-		SocketRegistry* Run(NSocket* sender, SocketArgs* args);
+		SocketRegistry* Run(ISendable* sender, SocketArgs* args);
 
-		SocketRegistry* Register(SocketAnnex rhs);
+		SocketRegistry* Register(SendableAnnex rhs);
 
-		SocketRegistry* UnRegister(SocketAnnex rhs);
+		SocketRegistry* UnRegister(SendableAnnex rhs);
 
-		SocketRegistry* operator+=(SocketAnnex rhs);
+		SocketRegistry* operator+=(SendableAnnex rhs);
 
-		SocketRegistry* operator-=(SocketAnnex rhs);
+		SocketRegistry* operator-=(SendableAnnex rhs);
 
-		std::vector<SocketAnnex*> Container(void) const;
+		std::vector<SendableAnnex*> Container(void) const;
 
 	private:
 		volatile long m_count;
-		std::vector<SocketAnnex*> m_registered;
+		std::vector<SendableAnnex*> m_registered;
 	};
 }
 #endif // !_N_SOCKET_REGISTRY_H_
