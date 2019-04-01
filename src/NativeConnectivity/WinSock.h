@@ -3,6 +3,8 @@
 #ifndef _N_WINSOCK_H_
 #define _N_WINSOCK_H_
 
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
 #pragma comment(lib, "ws2_32.lib")
 
 #include "NWindows.h"
