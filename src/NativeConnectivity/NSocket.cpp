@@ -39,10 +39,9 @@ namespace NConnectivity
 		protocol = (int)inOptions.protocol;
 		flags = (int)inOptions.flags;
 
-
 		endPoint.sin_addr.s_addr = inet_addr(inEndPoint.ip.c_str());
 		endPoint.sin_port = htons(inEndPoint.port);
-		endPoint.sin_family = AF_INET;
+		endPoint.sin_family = (short)inOptions.addressFamily;
 
 		addrLen = sizeof(endPoint);
 		*sck = socket(endPoint.sin_family, socket_type, protocol);
@@ -58,9 +57,9 @@ namespace NConnectivity
 		return listen(*sck, backlog);
 	}
 
-	SOCKET NSocket::Accept(void)
+	SOCKET NSocket::Accept(SOCKADDR_IN* address, int* len)
 	{
-		return accept(*sck, (SOCKADDR*)&endPoint, &addrLen);
+		return accept(*sck, (SOCKADDR*)&address, len);
 	}
 
 	void NSocket::BeginAccept(void)
@@ -205,6 +204,16 @@ namespace NConnectivity
 		return sck;
 	}
 
+	SOCKADDR_IN NSocket::GetEndPoint(void)
+	{
+		return endPoint;
+	}
+
+	int NSocket::GetEndPointLength(void)
+	{
+		return addrLen;
+	}
+
 	SocketRegistry* NSocket::GetAcceptRegistry(void)
 	{
 		return AcceptRegistry;
@@ -249,14 +258,30 @@ namespace NConnectivity
 		sck = new SOCKET(sock);
 	}
 
+	void NSocket::SetEndPoint(const SOCKADDR_IN& ep)
+	{
+		endPoint = ep;
+	}
+
+	void NSocket::SetLen(const int& len)
+	{
+		addrLen = len;
+	}
+
 	void NSocket::HelperAcceptMethod(void)
 	{
-		SOCKET accepted = accept(*sck, (SOCKADDR*)&endPoint, &addrLen);
-			
+		SOCKADDR_IN localEp;
+		int localLen;
+
+		SOCKET accepted = accept(*sck, (SOCKADDR*)&localEp, &localLen);
+		
 		if (accepted)
 		{
 			NSocket accepted_socket(*this);
+
 			accepted_socket.SetSocket(accepted);
+			accepted_socket.SetEndPoint(localEp);
+			accepted_socket.SetLen(localLen);
 
 			std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(&accepted_socket, (int)accepted));
 			AcceptRegistry->Run(this, args.get());
@@ -265,7 +290,7 @@ namespace NConnectivity
 
 	void NSocket::HelperConnectMethod(void)
 	{
-		int result = connect(*sck, (SOCKADDR*)&endPoint, addrLen);
+		int result = (*sck, (SOCKADDR*)&endPoint, addrLen);
 		std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(this, result));
 		ConnectRegistry->Run(this, args.get());
 	}

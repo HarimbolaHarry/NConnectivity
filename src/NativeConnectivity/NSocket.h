@@ -34,9 +34,11 @@ namespace NConnectivity
 		int Listen(int backlog = SOMAXCONN);
 		
 		// Accept an incomming connection
-		SOCKET Accept(void);
+		// Parameters are optional Here
+		SOCKET Accept(SOCKADDR_IN* address, int* len);
 
 		// Accept an incomming connection (ASYNC)
+		// Accept Parameters can be accessed in the raised event's Arguments
 		void BeginAccept(void);
 
 		// Connect to a socket which is on listening state
@@ -77,6 +79,10 @@ namespace NConnectivity
 
 		SOCKET* GetSocket(void);
 
+		SOCKADDR_IN GetEndPoint(void);
+
+		int GetEndPointLength(void);
+
 		SocketRegistry* GetAcceptRegistry(void);
 
 		SocketRegistry* GetConnectRegistry(void);
@@ -93,6 +99,8 @@ namespace NConnectivity
 
 	private:
 		void SetSocket(const SOCKET& sock);
+		void SetEndPoint(const SOCKADDR_IN& ep);
+		void SetLen(const int& len);
 
 		void HelperAcceptMethod(void);
 		void HelperConnectMethod(void);
