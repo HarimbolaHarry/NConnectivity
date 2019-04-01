@@ -5,5 +5,12 @@
 int InitiateWinSock(WSADATA* outData)
 {
 	WORD dllVersion = MAKEWORD(2, 1);
-	return WSAStartup(dllVersion, outData);
+	int res = WSAStartup(dllVersion, outData);
+	if (res)
+	{
+		bIsInitialized = 1;
+		return res;
+	}
+	bIsInitialized = 0;
+	return res;
 }
