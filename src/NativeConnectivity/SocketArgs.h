@@ -7,19 +7,19 @@
 
 namespace NConnectivity
 {
-	class NAPI Socket {};
+	class NSocket;
 
 	class NAPI SocketArgs
 	{
 	public:
-		SocketArgs(Socket sock, int res);
+		SocketArgs(NSocket* sock, int res);
 		
-		Socket GetConnection(void);
+		NSocket* GetConnection(void);
 		
 		int GetResult(void);
 
 	private:
-		Socket connection;
+		NSocket* connection;
 		int result;
 	};
 }

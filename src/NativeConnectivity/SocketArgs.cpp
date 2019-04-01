@@ -1,16 +1,17 @@
 // © 2019 NIREX ALL RIGHTS RESERVED
 
 #include "SocketArgs.h"
+#include "Socket.h"
 
 namespace NConnectivity
 {
-	SocketArgs::SocketArgs(Socket sock, int res)
+	SocketArgs::SocketArgs(NSocket* sock, int res)
 		: connection(sock)
 		, result(res)
 	{
 	}
 
-	Socket SocketArgs::GetConnection(void)
+	NSocket* SocketArgs::GetConnection(void)
 	{
 		return connection;
 	}
