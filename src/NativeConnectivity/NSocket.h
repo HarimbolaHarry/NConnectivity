@@ -8,6 +8,8 @@
 #include "WinSock.h"
 #include "TransferArgs.h"
 #include "ISendable.h"
+#include "IPEndPoint.h"
+#include "SocketOptions.h"
 
 #include <string>
 #include <thread>
@@ -18,8 +20,12 @@ namespace NConnectivity
 	class NAPI NSocket final : public ISendable
 	{
 	public:
-		NSocket(const std::string& addr, int port, int socket_type, int protocol, int flags = 0);
+		NSocket(void);
 		~NSocket(void);
+
+		// TCP: IPEndPoint will be used to act as the binding address as the server or the address to connect to as the client.
+		// UDP: IPEndPoint will be used to act as the endpoint to send data to or to receive data from.
+		void Initialize(const IPEndPoint& inEndPoint, const SocketOptions& inOptions);
 
 		// Bind socket to the EndPoint
 		int Bind(void);
@@ -46,10 +52,10 @@ namespace NConnectivity
 		void BeginSend(char* data, int data_size);
 
 		// Send all the data to the given endpoint (datagram)
-		int SendTo(char* data, int data_size, const std::string& addr, int port);
+		int SendTo(char* data, int data_size);
 
 		// Send all the data to the given endpoint (datagram) (ASYNC)
-		void BeginSendTo(char* data, int data_size, const std::string& addr, int port);
+		void BeginSendTo(char* data, int data_size);
 
 		// Receive all the data from the connected socket
 		int Receive(char* data, int data_size);
@@ -58,10 +64,10 @@ namespace NConnectivity
 		void BeginReceive(char* data, int data_size);
 
 		// Receive all the data comming from the given endpoint (datagram)
-		int ReceiveFrom(char* data, int data_size, const std::string& addr, int port);
+		int ReceiveFrom(char* data, int data_size);
 
 		// Receive all the data comming from the given endpoint (datagram) (ASYNC)
-		void BeginReceiveFrom(char* data, int data_size, const std::string& addr, int port);
+		void BeginReceiveFrom(char* data, int data_size);
 
 		// Disconnect the main socket
 		int Disconnect(void);
@@ -69,16 +75,20 @@ namespace NConnectivity
 		// Disconnect the main socket (ASYNC)
 		void BeginDisconnect(void);
 
-		SOCKET* GetNSocket(void);
+		SOCKET* GetSocket(void);
 
 		SocketRegistry* GetAcceptRegistry(void);
 
 		SocketRegistry* GetConnectRegistry(void);
-		
+
 		SocketRegistry* GetSendRegistry(void);
-		
+
+		SocketRegistry* GetSendToRegistry(void);
+
 		SocketRegistry* GetReceiveRegistry(void);
-		
+
+		SocketRegistry* GetReceiveFromRegistry(void);
+
 		SocketRegistry* GetDisconnectRegistry(void);
 
 	private:
@@ -87,9 +97,9 @@ namespace NConnectivity
 		void HelperAcceptMethod(void);
 		void HelperConnectMethod(void);
 		void HelperSendMethod(char* data, int data_size);
-		void HelperSendToMethod(char* data, int data_size, const std::string& addr, int port);
+		void HelperSendToMethod(char* data, int data_size);
 		void HelperReceiveMethod(char* data, int data_size);
-		void HelperReceiveFromMethod(char* data, int data_size, const std::string& addr, int port);
+		void HelperReceiveFromMethod(char* data, int data_siz);
 		void HelperDisconnectMethod(void);
 
 		SocketRegistry* AcceptRegistry;

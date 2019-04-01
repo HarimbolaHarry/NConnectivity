@@ -4,22 +4,10 @@
 
 namespace NConnectivity
 {
-	NSocket::NSocket(const std::string& addr, int port, int socket_type, int protocol, int flags)
-		: addr(addr)
-		, port(port)
-		, socket_type(socket_type)
-		, protocol(protocol)
-		, flags(flags)
+
+	NSocket::NSocket(void)
 	{
 		sck = new SOCKET();
-
-		endPoint.sin_addr.s_addr = inet_addr(addr.c_str());
-		endPoint.sin_port = htons(port);
-		// For UDP & TCP NSockets
-		endPoint.sin_family = AF_INET;
-
-		addrLen = sizeof(endPoint);
-		*sck = socket(endPoint.sin_family, socket_type, protocol);
 
 		AcceptRegistry = new SocketRegistry();
 		ConnectRegistry = new SocketRegistry();
@@ -39,8 +27,25 @@ namespace NConnectivity
 		delete ReceiveRegistry;
 		delete ReceiveFromRegistry;
 		delete DisconnectRegistry;
-
+		
 		delete sck;
+	}
+
+	void NSocket::Initialize(const IPEndPoint& inEndPoint, const SocketOptions& inOptions)
+	{
+		addr = inEndPoint.ip;
+		port = inEndPoint.port;
+		socket_type = inOptions.socket_type;
+		protocol = inOptions.socket_protocol;
+		flags = inOptions.socket_flags;
+
+
+		endPoint.sin_addr.s_addr = inet_addr(inEndPoint.ip.c_str());
+		endPoint.sin_port = htons(inEndPoint.port);
+		endPoint.sin_family = AF_INET;
+
+		addrLen = sizeof(endPoint);
+		*sck = socket(endPoint.sin_family, socket_type, protocol);
 	}
 
 	int NSocket::Bind(void)
@@ -103,20 +108,15 @@ namespace NConnectivity
 		t.detach();
 	}
 
-	int NSocket::SendTo(char* data, int data_size, const std::string& addr, int port)
+	int NSocket::SendTo(char* data, int data_size)
 	{
-		SOCKADDR_IN localEP;
-		localEP.sin_addr.s_addr = inet_addr(addr.c_str());
-		localEP.sin_port = htons(port);
-		localEP.sin_family = AF_INET;
-		int localAL = sizeof(localEP);
-
+		int localAL = sizeof(endPoint);
 		const char *data_ptr = (const char*)data;
 		int bytes_sent;
 
 		while (data_size > 0)
 		{
-			bytes_sent = sendto(*sck, data, data_size, flags, (SOCKADDR*)&localEP, localAL);
+			bytes_sent = sendto(*sck, data, data_size, flags, (SOCKADDR*)&endPoint, localAL);
 
 			if (bytes_sent == SOCKET_ERROR)
 			{
@@ -130,9 +130,9 @@ namespace NConnectivity
 		return 1;		
 	}
 
-	void NSocket::BeginSendTo(char* data, int data_size, const std::string& addr, int port)
+	void NSocket::BeginSendTo(char* data, int data_size)
 	{
-		std::thread t(&NSocket::HelperSendToMethod, this, data, data_size, addr, port);
+		std::thread t(&NSocket::HelperSendToMethod, this, data, data_size);
 		t.detach();
 	}
 
@@ -162,20 +162,15 @@ namespace NConnectivity
 		t.detach();
 	}
 
-	int NSocket::ReceiveFrom(char* data, int data_size, const std::string& addr, int port)
+	int NSocket::ReceiveFrom(char* data, int data_size)
 	{
-		SOCKADDR_IN localEP;
-		localEP.sin_addr.s_addr = inet_addr(addr.c_str());
-		localEP.sin_port = htons(port);
-		localEP.sin_family = AF_INET;
-		int localAL = sizeof(localEP);
-
+		int localAL = sizeof(endPoint);
 		char *data_ptr = (char*)data;
 		int bytes_recv;
 
 		while (data_size > 0)
 		{
-			bytes_recv = recvfrom(*sck, data, data_size, flags, (SOCKADDR*)&localEP, &localAL);
+			bytes_recv = recvfrom(*sck, data, data_size, flags, (SOCKADDR*)&endPoint, &localAL);
 			if (bytes_recv <= 0)
 			{
 				return bytes_recv;
@@ -188,9 +183,9 @@ namespace NConnectivity
 		return bytes_recv;
 	}
 
-	void NSocket::BeginReceiveFrom(char* data, int data_size, const std::string& addr, int port)
+	void NSocket::BeginReceiveFrom(char* data, int data_size)
 	{
-		std::thread t(&NSocket::HelperReceiveFromMethod, this, data, data_size, addr, port);
+		std::thread t(&NSocket::HelperReceiveFromMethod, this, data, data_size);
 		t.detach();
 	}
 
@@ -205,7 +200,7 @@ namespace NConnectivity
 		t.detach();
 	}
 
-	SOCKET* NSocket::GetNSocket(void)
+	SOCKET* NSocket::GetSocket(void)
 	{
 		return sck;
 	}
@@ -225,9 +220,19 @@ namespace NConnectivity
 		return SendRegistry;
 	}
 
+	SocketRegistry* NSocket::GetSendToRegistry(void)
+	{
+		return SendToRegistry;
+	}
+
 	SocketRegistry* NSocket::GetReceiveRegistry(void)
 	{
 		return ReceiveRegistry;
+	}
+
+	SocketRegistry* NSocket::GetReceiveFromRegistry(void)
+	{
+		return ReceiveFromRegistry;
 	}
 
 	SocketRegistry* NSocket::GetDisconnectRegistry(void)
@@ -291,21 +296,16 @@ namespace NConnectivity
 		SendRegistry->Run(this, args.get());
 	}
 
-	void NSocket::HelperSendToMethod(char* data, int data_size, const std::string& addr, int port)
+	void NSocket::HelperSendToMethod(char* data, int data_size)
 	{
-		SOCKADDR_IN lendPoint;
-		lendPoint.sin_addr.s_addr = inet_addr(addr.c_str());
-		lendPoint.sin_port = htons(port);
-		lendPoint.sin_family = AF_INET;
 		int laddrLen = sizeof(endPoint);
-
 		int result;
 		const char *data_ptr = (const char*)data;
 		int bytes_sent;
 
 		while (data_size > 0)
 		{
-			bytes_sent = sendto(*sck, data, data_size, flags, (SOCKADDR*)&lendPoint, laddrLen);
+			bytes_sent = sendto(*sck, data, data_size, flags, (SOCKADDR*)&endPoint, laddrLen);
 
 			if (bytes_sent == SOCKET_ERROR)
 			{
@@ -347,21 +347,16 @@ namespace NConnectivity
 		ReceiveRegistry->Run(this, args.get());
 	}
 
-	void NSocket::HelperReceiveFromMethod(char * data, int data_size, const std::string & addr, int port)
+	void NSocket::HelperReceiveFromMethod(char * data, int data_size)
 	{
-		SOCKADDR_IN localEP;
-		localEP.sin_addr.s_addr = inet_addr(addr.c_str());
-		localEP.sin_port = htons(port);
-		localEP.sin_family = AF_INET;
-		int localAL = sizeof(localEP);
-
+		int localAL = sizeof(endPoint);
 		char *data_ptr = (char*)data;
 		int bytes_recv;
 		int result = 0;
 
 		while (data_size > 0)
 		{
-			bytes_recv = recvfrom(*sck, data, data_size, flags, (SOCKADDR*)&localEP, &localAL);
+			bytes_recv = recvfrom(*sck, data, data_size, flags, (SOCKADDR*)&endPoint, &localAL);
 			if (bytes_recv <= 0)
 			{
 				result = bytes_recv;
