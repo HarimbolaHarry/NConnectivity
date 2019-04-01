@@ -5,11 +5,14 @@
 
 #include <string>
 
-typedef struct 
+namespace NConnectivity
 {
-	std::string ip;
-	int port;
+	typedef struct
+	{
+		std::string ip;
+		int port;
 
-} IPEndPoint;
+	} IPEndPoint;
+}
 
 #endif // !_N_IP_ENDPOINT_H_
