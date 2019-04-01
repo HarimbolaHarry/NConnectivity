@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ESocketFamily.h" />
     <ClInclude Include="ESocketFlags.h" />
     <ClInclude Include="ESocketProtocol.h" />
     <ClInclude Include="ESocketType.h" />

@@ -90,6 +90,9 @@
     <ClInclude Include="ESocketFlags.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="ESocketFamily.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SocketArgs.cpp">
