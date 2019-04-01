@@ -1,7 +1,7 @@
 // © 2019 NIREX ALL RIGHTS RESERVED
 
 #include "SocketArgs.h"
-#include "Socket.h"
+#include "NSocket.h"
 
 namespace NConnectivity
 {
