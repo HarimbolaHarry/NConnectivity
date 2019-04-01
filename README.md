@@ -44,7 +44,7 @@ Test client made with C# and uses NConnectivity Lib.
 
 Test server made with C# and uses NConnectivity Lib.
 
-### 5) NativeConnectivity
+### 5) NativeConnectivity (WIP)
 
 C++ SOCKET wrapper library.
 
