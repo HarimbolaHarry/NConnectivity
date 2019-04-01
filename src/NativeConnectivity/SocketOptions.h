@@ -3,14 +3,19 @@
 #ifndef _N_SOCKET_OPTIONS_H_
 #define _N_SOCKET_OPTIONS_H_
 
-#include <string>
+#include "ESocketType.h"
+#include "ESocketProtocol.h"
+#include "ESocketFlags.h"
 
-typedef struct
+namespace NConnectivity
 {
-	int socket_type;
-	int socket_protocol; 
-	int socket_flags;
+	typedef struct
+	{
+		ESocketType type;
+		ESocketProtocol protocol;
+		ESocketFlags flags;
 
-} SocketOptions;
+	} SocketOptions;
+}
 
 #endif // !_N_SOCKET_OPTIONS_H_
