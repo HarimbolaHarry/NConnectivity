@@ -7,6 +7,7 @@
 #include "NDefines.h"
 #include "WinSock.h"
 #include "TransferArgs.h"
+#include "ISendable.h"
 
 #include <string>
 #include <thread>
@@ -14,7 +15,7 @@
 
 namespace NConnectivity
 {
-	class NAPI NSocket final
+	class NAPI NSocket final : public ISendable
 	{
 	public:
 		NSocket(const std::string& addr, int port, int socket_type, int protocol, int flags = 0);
@@ -89,7 +90,6 @@ namespace NConnectivity
 		SOCKET* sck;
 
 		// Raw data
-
 		std::string addr;
 		int port;
 		int socket_type;
