@@ -39,17 +39,17 @@ namespace NConnectivity
 		// Connect to a socket which is on listening state (ASYNC)
 		void BeginConnect(void);
 
-		// Send data to the connected socket
-		int Send(char* data, int dataLength);
+		// Send all the data to the connected socket
+		int Send(char* data, int data_size);
 
-		// Send data to the connected socket (ASYNC)
-		void BeginSend(char* data, int dataLength);
+		// Send all the data to the connected socket (ASYNC)
+		void BeginSend(char* data, int data_size);
 
-		// Receive data from the connected socket
-		int Receive(char* buffer, int length);
+		// Receive all the data from the connected socket
+		int Receive(char* data, int data_size);
 
-		// Receive data from the connected socket (ASYNC)
-		void BeginReceive(char* buffer, int length);
+		// Receive all the data from the connected socket (ASYNC)
+		void BeginReceive(char* data, int data_size);
 
 		// Disconnect the main socket
 		int Disconnect(void);
@@ -70,12 +70,12 @@ namespace NConnectivity
 		SocketRegistry* GetDisconnectRegistry(void);
 
 	private:
-		void SetNSocket(const SOCKET& sock);
+		void SetSocket(const SOCKET& sock);
 
 		void HelperAcceptMethod(void);
 		void HelperConnectMethod(void);
-		void HelperSendMethod(char* data, int dataLength);
-		void HelperReceiveMethod(char* buffer, int length);
+		void HelperSendMethod(char* data, int data_size);
+		void HelperReceiveMethod(char* data, int data_size);
 		void HelperDisconnectMethod(void);
 
 		SocketRegistry* AcceptRegistry;

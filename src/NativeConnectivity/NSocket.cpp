@@ -72,25 +72,56 @@ namespace NConnectivity
 		t.detach();
 	}
 
-	int NSocket::Send(char* data, int dataLength)
+	int NSocket::Send(char* data, int data_size)
 	{
-		return send(*sck, data, dataLength, flags);
+		const char *data_ptr = (const char*)data;
+		int bytes_sent;
+
+		while (data_size > 0)
+		{
+			bytes_sent = send(*sck, data_ptr, data_size, flags);
+
+			if (bytes_sent == SOCKET_ERROR)
+			{
+				return -1;
+			}
+
+			data_ptr += bytes_sent;
+			data_size -= bytes_sent;
+		}
+
+		return 1;
 	}
 
-	void NSocket::BeginSend(char* data, int dataLength)
+	void NSocket::BeginSend(char* data, int data_size)
 	{
-		std::thread t(&NSocket::HelperSendMethod, this, data, dataLength);
+		std::thread t(&NSocket::HelperSendMethod, this, data, data_size);
 		t.detach();
 	}
 
-	int NSocket::Receive(char* buffer, int length)
+	int NSocket::Receive(char* data, int data_size)
 	{
-		return recv(*sck, buffer, length, flags);
+		char *data_ptr = (char*)data;
+		int bytes_recv;
+
+		while (data_size > 0)
+		{
+			bytes_recv = recv(*sck, data_ptr, data_size, 0);
+			if (bytes_recv <= 0)
+			{
+				return bytes_recv;
+			}
+
+			data_ptr += bytes_recv;
+			data_size -= bytes_recv;
+		}
+
+		return 1;
 	}
 
-	void NSocket::BeginReceive(char* buffer, int length)
+	void NSocket::BeginReceive(char* data, int data_size)
 	{
-		std::thread t(&NSocket::HelperReceiveMethod, this, buffer, length);
+		std::thread t(&NSocket::HelperReceiveMethod, this, data, data_size);
 		t.detach();
 	}
 
@@ -135,7 +166,7 @@ namespace NConnectivity
 		return DisconnectRegistry;
 	}
 
-	void NSocket::SetNSocket(const SOCKET& sock)
+	void NSocket::SetSocket(const SOCKET& sock)
 	{
 		if (sck)
 		{
@@ -151,7 +182,7 @@ namespace NConnectivity
 		if (accepted)
 		{
 			NSocket accepted_socket(*this);
-			accepted_socket.SetNSocket(accepted);
+			accepted_socket.SetSocket(accepted);
 
 			std::unique_ptr<SocketArgs> args = std::make_unique<SocketArgs>(SocketArgs(&accepted_socket, (int)accepted));
 			AcceptRegistry->Run(this, args.get());
@@ -165,17 +196,53 @@ namespace NConnectivity
 		ConnectRegistry->Run(this, args.get());
 	}
 
-	void NSocket::HelperSendMethod(char* data, int dataLength)
+	void NSocket::HelperSendMethod(char* data, int data_size)
 	{
-		int result = send(*sck, data, dataLength, flags);
-		std::unique_ptr<TransferArgs> args = std::make_unique<TransferArgs>(TransferArgs(this, data, dataLength, result));
+		int result = 0;
+		const char *data_ptr = (const char*)data;
+		int bytes_sent;
+
+		while (data_size > 0)
+		{
+			bytes_sent = send(*sck, data_ptr, data_size, flags);
+
+			if (bytes_sent == SOCKET_ERROR)
+			{
+				result = -1;
+				break;
+			}
+
+			data_ptr += bytes_sent;
+			data_size -= bytes_sent;
+		}
+
+		result = 1;
+
+		std::unique_ptr<TransferArgs> args = std::make_unique<TransferArgs>(TransferArgs(this, data, data_size, result));
 		SendRegistry->Run(this, args.get());
 	}
 
-	void NSocket::HelperReceiveMethod(char* buffer, int length)
+	void NSocket::HelperReceiveMethod(char* data, int data_size)
 	{
-		int result = recv(*sck, buffer, length, flags);
-		std::unique_ptr<TransferArgs> args = std::make_unique<TransferArgs>(TransferArgs(this, buffer, length, result));;
+		char *data_ptr = (char*)data;
+		int bytes_recv;
+		int result;
+
+		while (data_size > 0)
+		{
+			bytes_recv = recv(*sck, data_ptr, data_size, flags);
+			if (bytes_recv <= 0)
+			{
+				result = bytes_recv;
+			}
+
+			data_ptr += bytes_recv;
+			data_size -= bytes_recv;
+		}
+
+		result = bytes_recv;
+
+		std::unique_ptr<TransferArgs> args = std::make_unique<TransferArgs>(TransferArgs(this, data, data_size, bytes_recv));;
 		ReceiveRegistry->Run(this, args.get());
 	}
 
