@@ -45,11 +45,23 @@ namespace NConnectivity
 		// Send all the data to the connected socket (ASYNC)
 		void BeginSend(char* data, int data_size);
 
+		// Send all the data to the given endpoint (datagram)
+		int SendTo(char* data, int data_size, const std::string& addr, int port);
+
+		// Send all the data to the given endpoint (datagram) (ASYNC)
+		void BeginSendTo(char* data, int data_size, const std::string& addr, int port);
+
 		// Receive all the data from the connected socket
 		int Receive(char* data, int data_size);
 
 		// Receive all the data from the connected socket (ASYNC)
 		void BeginReceive(char* data, int data_size);
+
+		// Receive all the data comming from the given endpoint (datagram)
+		int ReceiveFrom(char* data, int data_size, const std::string& addr, int port);
+
+		// Receive all the data comming from the given endpoint (datagram) (ASYNC)
+		void BeginReceiveFrom(char* data, int data_size, const std::string& addr, int port);
 
 		// Disconnect the main socket
 		int Disconnect(void);
@@ -75,13 +87,17 @@ namespace NConnectivity
 		void HelperAcceptMethod(void);
 		void HelperConnectMethod(void);
 		void HelperSendMethod(char* data, int data_size);
+		void HelperSendToMethod(char* data, int data_size, const std::string& addr, int port);
 		void HelperReceiveMethod(char* data, int data_size);
+		void HelperReceiveFromMethod(char* data, int data_size, const std::string& addr, int port);
 		void HelperDisconnectMethod(void);
 
 		SocketRegistry* AcceptRegistry;
 		SocketRegistry* ConnectRegistry;
 		SocketRegistry* SendRegistry;
+		SocketRegistry* SendToRegistry;
 		SocketRegistry* ReceiveRegistry;
+		SocketRegistry* ReceiveFromRegistry;
 		SocketRegistry* DisconnectRegistry;
 
 		int flags;
