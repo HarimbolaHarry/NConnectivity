@@ -16,7 +16,6 @@ namespace NConnectivity
 		ESocketProtocol protocol;
 		ESocketFlags flags;
 		ESocketAddressFamily addressFamily;
-
 	} SocketOptions;
 }
 

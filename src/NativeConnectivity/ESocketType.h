@@ -12,7 +12,6 @@ namespace NConnectivity
 		ST_RAW = 3,
 		ST_RDM = 4,
 		ST_SEQPACKET = 5
-
 	};
 }
 

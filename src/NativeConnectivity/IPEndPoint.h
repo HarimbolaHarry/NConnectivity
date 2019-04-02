@@ -11,7 +11,6 @@ namespace NConnectivity
 	{
 		std::string ip;
 		int port;
-
 	} IPEndPoint;
 }
 
