@@ -18,13 +18,15 @@ Enjoy!
 
 4) It's well documented
 
-5) It fully supports TCP & UDP Protocols (In the right way)
+5) It fully supports TCP & UDP Protocols
 
-6) TCP Protocol's Server supports multiple clients simultaneously
+6) TCP Protocol's Server supports multiple clients simultaneously and in an asynchronous manner
 
-7) It's very easy to use
+7) It's very easy to use 
 
 8) It uses MIT License 
+
+9) Example projects are provided
 
 # List of Projects
 
