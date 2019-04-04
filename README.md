@@ -34,19 +34,15 @@ Enjoy!
 
 Main C# Socket wrapper library that will be developed and expanded.
 
-### 2) LiteConnectivity
-
-Much like NConnectivity but with the lowest amount of features.
-
-### 3) TCPTestClient
+### 2) TCPTestClient
 
 Test client made with C# and uses NConnectivity Lib.
 
-### 4) TCPTestServer
+### 3) TCPTestServer
 
 Test server made with C# and uses NConnectivity Lib.
 
-### 5) NativeConnectivity (WIP)
+### 4) NativeConnectivity (WIP)
 
 C++ SOCKET wrapper library.
 
