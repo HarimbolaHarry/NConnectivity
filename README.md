@@ -42,12 +42,6 @@ Test client made with C# and uses NConnectivity Lib.
 
 Test server made with C# and uses NConnectivity Lib.
 
-### 4) NativeConnectivity (WIP)
-
-C++ SOCKET wrapper library.
-
-This lib will also be developed alongside NConnectivity.
-
 # Copyright
 
 Copyright (C) 2019 Nirex
