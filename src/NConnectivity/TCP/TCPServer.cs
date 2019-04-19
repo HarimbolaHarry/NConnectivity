@@ -46,7 +46,7 @@ namespace NConnectivity.TCP
         }
 
         /// <summary>
-        /// Binds the main Socket to the LoopBack address and a given port and Begins listening for connections.
+        /// Binds the main Socket to the 0.0.0.0 address and a given port and Begins listening for connections.
         /// </summary>
         /// <param name="port">Port of the EndPoint.</param>
         public TCPServer(int port, int maxBufferSize = 1024)
@@ -55,7 +55,7 @@ namespace NConnectivity.TCP
             sndBuffer = new byte[maxBufferSize];
             Connections = new List<Socket>();
             GeneralBufferSize = maxBufferSize;
-            IpEndPoint = new IPEndPoint(IPAddress.Loopback, port);
+            IpEndPoint = new IPEndPoint(IPAddress.Any, port);
             Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Connection.Bind(IpEndPoint);
             Connection.Listen(int.MaxValue);
